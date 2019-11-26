@@ -36,20 +36,6 @@ def imgRange(path):
 	  return None if min > max else (min, max)
 
 def takePicture():
-	if not os.path.isdir(pathData):
-	  try:
-	    os.makedirs(pathData)
-	    # Set new directory ownership to pi user, mode to 755
-	    os.chown(pathData, uid, gid)
-	    os.chmod(pathData,
-	      stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR |
-	      stat.S_IRGRP | stat.S_IXGRP |
-	      stat.S_IROTH | stat.S_IXOTH)
-	  except OSError as e:
-	    # errno = 2 if can't create folder
-	    print errno.errorcode[e.errno]
-	    return
-
 	# scan for the max image index, start at next pos.
 	r = imgRange(pathData)
 	if r is None:
@@ -123,26 +109,19 @@ while(True):
     if button.is_pressed:
       takePicture()
     else:
-	  # Refresh display
-	  stream = io.BytesIO() # Capture into in-memory stream
-	  camera.capture(stream, use_video_port=True, format='raw')
-	  stream.seek(0)
-	  stream.readinto(yuv)  # stream -> YUV buffer
-	  stream.close()
-	  yuv2rgb.convert(yuv, rgb, sizeData[sizeMode][1][0],
-	  sizeData[sizeMode][1][1])
-	  img = pygame.image.frombuffer(rgb[0:
-	  (sizeData[sizeMode][1][0] * sizeData[sizeMode][1][1] * 3)],
-	  sizeData[sizeMode][1], 'RGB')
-	  elif screenMode < 2: # Playback mode or delete confirmation
-	  img = scaled       # Show last-loaded image
-	  else:                # 'No Photos' mode
-	  img = None         # You get nothing, good day sir
+      # Refresh display
+      stream = io.BytesIO() # Capture into in-memory stream
+      camera.capture(stream, use_video_port=True, format='raw')
+      stream.seek(0)
+      stream.readinto(yuv)  # stream -> YUV buffer
+      stream.close()
+      yuv2rgb.convert(yuv, rgb, sizeData[1][0],sizeData[1][1])
+      img = pygame.image.frombuffer(rgb[0:
+      (sizeData[1][0] * sizeData[1][1] * 3)],
+      sizeData[1], 'RGB')
 
-	  if img is None or img.get_height() < 240: # Letterbox, clear background
-	  screen.fill(0)
-	  if img:
-		  screen.blit(img,
-		  ((320 - img.get_width() ) / 2,
-		  (240 - img.get_height()) / 2))
+      if img:
+	screen.blit(img,
+	((320 - img.get_width() ) / 2,
+	(240 - img.get_height()) / 2))
     sleep(1)
