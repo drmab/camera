@@ -1,8 +1,7 @@
 # Barebone camera script
 # see:
-# http://learn.adafruit.com/adafruit-pitft-28-inch-resistive-touchscreen-display-raspberry-pi
+# https://github.com/adafruit/adafruit-pi-cam/blob/master/cam.py
 
-import errno
 import io
 import os
 import os.path
@@ -19,7 +18,7 @@ sizeData = [(2592, 1944), (320, 240), (0.0   , 0.0   , 1.0   , 1.0   )]
 saveIdx = 0
 screenMode = 3
 # find the right one
-button = Button(2)
+button = Button(17)
 
 # Assorted utility functions -----------------------------------------------
 
@@ -90,7 +89,6 @@ yuv = bytearray(320 * 240 * 3 / 2)
 
 # Init pygame and screen
 pygame.init()
-pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
 
 # Init camera and set up default values
