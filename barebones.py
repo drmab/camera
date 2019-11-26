@@ -23,6 +23,18 @@ button = Button(2)
 
 # Assorted utility functions -----------------------------------------------
 
+def imgRange(path):
+	min = 9999
+	max = 0
+	try:
+	  for file in os.listdir(path):
+	    if fnmatch.fnmatch(file, 'IMG_[0-9][0-9][0-9][0-9].JPG'):
+	      i = int(file[4:8])
+	      if(i < min): min = i
+	      if(i > max): max = i
+	finally:
+	  return None if min > max else (min, max)
+
 def takePicture():
 	if not os.path.isdir(pathData):
 	  try:
