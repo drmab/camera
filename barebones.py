@@ -100,13 +100,12 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 
 # Main loop ----------------------------------------------------------------
 
-while(True):
-
-  # Process touchscreen input
-  while True:
+while True:
     if button.is_pressed:
+      print("Pressed")
       takePicture()
     else:
+      # print("Not pressed")
       # Refresh display
       stream = io.BytesIO() # Capture into in-memory stream
       camera.capture(stream, use_video_port=True, format='raw')
@@ -122,4 +121,4 @@ while(True):
 	screen.blit(img,
 	((320 - img.get_width() ) / 2,
 	(240 - img.get_height()) / 2))
-    sleep(1)
+    sleep(2)
