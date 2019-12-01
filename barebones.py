@@ -2,12 +2,16 @@
 # see:
 # https://github.com/adafruit/adafruit-pi-cam/blob/master/cam.py
 
+import atexit
 import io
 import os
 import os.path
+import fnmatch
 import picamera
 import pygame
 import stat
+import time
+import yuv2rgb
 from pygame.locals import *
 from gpiozero import Button
 
