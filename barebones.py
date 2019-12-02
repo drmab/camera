@@ -11,6 +11,7 @@ import picamera
 import pygame
 import stat
 import time
+import sys
 import yuv2rgb
 from pygame.locals import *
 from gpiozero import Button
@@ -73,7 +74,22 @@ def takePicture():
 	  camera.resolution = sizeData[1]
 	  camera.crop       = (0.0, 0.0, 1.0, 1.0)
 
+def showViewport():
+	stream = io.BytesIO() # Capture into in-memory stream
+	camera.capture(stream, use_video_port=True, format='raw')
+	stream.seek(0)
+	stream.readinto(yuv)  # stream -> YUV buffer
+	stream.close()
+	yuv2rgb.convert(yuv, rgb, sizeData[1][0],sizeData[1][1])
+	img = pygame.image.frombuffer(rgb[0:
+	(sizeData[1][0] * sizeData[1][1] * 3)],
+	sizeData[1], 'RGB')
 
+	if img:
+		screen.blit(img,
+		((320 - img.get_width() ) / 2,
+		(240 - img.get_height()) / 2))
+	pygame.display.update()
 # Initialization -----------------------------------------------------------
 
 # Init framebuffer/touchscreen environment variables
@@ -105,26 +121,15 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Main loop ----------------------------------------------------------------
 
 while True:
-    if button.is_pressed:
-      print("Pressed")
-      takePicture()
-    else:
-      # print("Not pressed")
-      # Refresh display
-      stream = io.BytesIO() # Capture into in-memory stream
-      camera.capture(stream, use_video_port=True, format='raw')
-      stream.seek(0)
-      stream.readinto(yuv)  # stream -> YUV buffer
-      stream.close()
-      yuv2rgb.convert(yuv, rgb, sizeData[1][0],sizeData[1][1])
-      img = pygame.image.frombuffer(rgb[0:
-      (sizeData[1][0] * sizeData[1][1] * 3)],
-      sizeData[1], 'RGB')
-
-      if img:
-	screen.blit(img,
-	((320 - img.get_width() ) / 2,
-	(240 - img.get_height()) / 2))
-      pygame.display.update()
-
+	if button.is_pressed:
+		print "Pressed"
+		takePicture()
+	else:
+		# Refresh display
+		try:
+			showViewport()
+			print "Not pressed"
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+			raise
     sleep(2)
