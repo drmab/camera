@@ -123,7 +123,11 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 while True:
 	if button.is_pressed:
 		print "Pressed"
-		takePicture()
+		try:
+			takePicture()
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+			raise
 	else:
 		# Refresh display
 		try:
@@ -132,4 +136,4 @@ while True:
 		except:
 			print "Unexpected error:", sys.exc_info()[0]
 			raise
-    sleep(2)
+	sleep(2)
